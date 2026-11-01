@@ -1,0 +1,24 @@
+name: Build Windows
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Giải nén
+        shell: pwsh
+        run: Expand-Archive -Path desm-desktop.zip -DestinationPath . -Force
+      - name: Cài và build
+        working-directory: desm-desktop
+        run: |
+          npm install
+          npm run dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DESM-Desktop-win
+          path: desm-desktop/dist/*.exe
